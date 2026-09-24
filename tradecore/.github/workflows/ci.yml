@@ -35,18 +35,18 @@ jobs:
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: backend/package-lock.json
+          cache-dependency-path: tradecore/backend/package-lock.json
 
       - name: Install dependencies
         run:  npm ci
-        working-directory: backend
+        working-directory: tradecore/backend/
 
       - name: Run schema migration
-        run: psql postgresql://tradecore:test_password@localhost:5432/tradecore_test -f database/schema.sql
+        run: psql postgresql://tradecore:test_password@localhost:5432/tradecore_test -f tradecore/database/schema.sql
 
       - name: Run tests
         run:  npm test
-        working-directory: backend
+        working-directory: tradecore/backend/
         env:
           NODE_ENV:    test
           DB_HOST:     localhost
@@ -68,10 +68,10 @@ jobs:
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: frontend/package-lock.json
+          cache-dependency-path: tradecore/frontend/package-lock.json
 
       - name: Install & build
-        working-directory: frontend
+        working-directory: tradecore/frontend/
         run: |
           npm ci
           npm run build
@@ -82,7 +82,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: frontend-dist
-          path: frontend/dist
+          path: tradecore/frontend/dist
 
   # ── Build & push API image ─────────────────────────────────────────
   build-api:
@@ -107,7 +107,7 @@ jobs:
 
       - name: Build and push
         id: build
-        working-directory: backend
+        working-directory: tradecore/backend/
         env:
           REGISTRY:  ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
