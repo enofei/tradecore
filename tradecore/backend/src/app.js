@@ -16,12 +16,11 @@ const app = express();
 // ── Security ─────────────────────────────────────────────────────
 app.use(helmet());
 
+  // Comma-separated allowlist so Amplify branch URLs can rotate without a code change.
+  const origins = (process.env.FRONTEND_URLS || process.env.FRONTEND_URL || '')
+    .split(',').map(s => s.trim()).filter(Boolean);
   app.use(cors({
-  origin: [
-    process.env.FRONTEND_URL,
-    'http://localhost:3001',
-    'https://develop.dpqtxdawh7h1c.amplifyapp.com'
-  ].filter(Boolean),
+  origin: [...origins, 'http://localhost:3001'],
   credentials: true
 }));
 
